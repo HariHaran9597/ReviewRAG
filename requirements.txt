@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+beautifulsoup4
+python-dotenv
+langchain
+langchain-community
+langchain-groq
+ragas
+faiss-cpu
+sentence-transformers
+rank_bm25

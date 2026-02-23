@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # The Python FastAPI Engine
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reviewrag-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Inject the API keys directly from your local .env file
+      - RAPIDAPI_KEY=${RAPIDAPI_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    env_file:
+      - .env
+    volumes:
+      # Mount for rapid development without rebuilding containers
+      - ./app:/app/app
+      - ./api:/app/api
+    networks:
+      - reviewrag-net
+
+  # The Vite React UI
+  frontend:
+    # Use standard Node.js image to run Vite's dev server
+    image: node:18-alpine
+    container_name: reviewrag-frontend
+    working_dir: /app/frontend
+    volumes:
+      # Mount the frontend directory entirely
+      - ./frontend:/app/frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Helps Vite hot-reload on Windows environments
+    # Tell node to install packages first (if missing), then start dev server on all interfaces
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - reviewrag-net
+    depends_on:
+      - backend
+
+networks:
+  reviewrag-net:
+    driver: bridge
