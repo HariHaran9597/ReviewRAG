@@ -1,22 +1,21 @@
 # ReviewRAG: Anti-Fake Review Analyzer
 
-![Project Header Banner] <!-- Add a screenshot of the Glassmorphism UI here -->
+<img width="2445" height="1257" alt="image" src="https://github.com/user-attachments/assets/ec71a264-b41c-4d57-a910-b55f15ce437e" />
 
-**A Production-Grade Generative AI Engineering Portfolio Project.**
 
 ReviewRAG is an intelligent, full-stack application designed to cut through fake, promotional 5-star reviews and unhelpful 1-star shipping complaints on e-commerce platforms like Amazon and Flipkart. 
 
 By aggressively filtering down to ONLY verified 3 and 4-star purchases, and utilizing an advanced **In-Memory Hybrid Search Pipeline (FAISS + BM25 + Reciprocal Rank Fusion + BGE Reranker)**, it extracts the absolute ground-truth about a product. The final answer is synthesized using the lightning-fast `moonshotai/kimi-k2-instruct-0905` model via Groq, with built-in RAGAS metric evaluation.
 
-## 🌟 Why This Project Stands Out (Architecture Decisions)
+## 🌟 Key Features
 
-When evaluating AI Candidates, recruiters and senior engineers look for three things: Data Quality understanding, Retrieval complexity, and Cost-awareness. This application hits all three:
+1. **Strict Data Filtering**: Ignores noisy 5-star and 1-star reviews. Only processes verified 3-star and 4-star reviews longer than 20 words for maximum insight.
+2. **Hybrid Retrieval (RRF)**: Combines FAISS Vector Search with BM25 Keyword Search using Reciprocal Rank Fusion to never miss exact product features.
+3. **Cross-Encoder Reranking**: Rescores the top retrieved results using a `BAAI/bge-reranker-base` cross-encoder for peak precision.
+4. **Ephemeral Memory**: Uses a zero-cost, temporary In-Memory FAISS index for each user session instead of an expensive persistent database.
+5. **Quality Assured**: Answers are evaluated post-generation for *Faithfulness* and *Answer Relevancy* using RAGAS concepts.
+6. **Smart Fallbacks**: Robustly handles shortened URLs, regional Amazon links (like `.in`, `.co.uk`), and gracefully handles API limitations.
 
-1. **Strict Data Filtering over "More Data"**: Standard tutorials feed all text to an LLM. ReviewRAG intentionally discards 5-star (often paid) and 1-star (often user-error) reviews. It only embeds verified 3-star and 4-star reviews longer than 20 words, proving an elite understanding that **Signal > Noise**.
-2. **Hybrid Retrieval with Reciprocal Rank Fusion (RRF)**: Instead of basic dense vector search (which often misses exact part numbers or specific feature requests), this project simultaneously queries a FAISS Vector Index and a sparse BM25 Keyword index, merging them via the RRF mathematical algorithm.
-3. **Cross-Encoder Reranking**: The top 20 fused results are rescored using a `BAAI/bge-reranker-base` cross-encoder for peak precision before hitting the LLM.
-4. **$0.00 Operating Cost (Ephemeral Memory Strategy)**: Because every product's reviews are isolated datasets, paying for a persistent database (like Pinecone) is architecturally incorrect. ReviewRAG spins up a temporary In-Memory FAISS index for each user session.
-5. **RAGAS Evaluated**: Answers are evaluated post-generation for *Faithfulness* and *Answer Relevancy*, proving the system does not hallucinate. OpenAI dependencies were bypassed to run this evaluation entirely free via Groq.
 
 ## ⚙️ Tech Stack
 
