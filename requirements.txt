@@ -1,12 +1,15 @@
 fastapi
-uvicorn
+uvicorn[standard]
 requests
 beautifulsoup4
 python-dotenv
 langchain
 langchain-community
 langchain-groq
+langchain-core
+langchain-text-splitters
 ragas
 faiss-cpu
 sentence-transformers
 rank_bm25
+datasets
